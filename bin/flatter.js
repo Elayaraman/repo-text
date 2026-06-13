@@ -32,6 +32,9 @@ function parseArgs(argv) {
     version: false,
   };
 
+  // Track which options were explicitly set via CLI
+  const cliSet = new Set();
+
   const args = argv.slice(2);
   let i = 0;
 
@@ -39,46 +42,48 @@ function parseArgs(argv) {
     const arg = args[i];
     switch (arg) {
       case '-h': case '--help':
-        opts.help = true; break;
+        opts.help = true; cliSet.add('help'); break;
       case '-v': case '--version':
-        opts.version = true; break;
+        opts.version = true; cliSet.add('version'); break;
       case '-o': case '--output':
-        opts.output = args[++i]; break;
+        opts.output = args[++i]; cliSet.add('output'); break;
       case '-s': case '--style':
-        opts.style = args[++i]; break;
+        opts.style = args[++i]; cliSet.add('style'); break;
       case '--tree':
-        opts.tree = true; break;
+        opts.tree = true; cliSet.add('tree'); break;
       case '--compress':
-        opts.compress = true; break;
+        opts.compress = true; cliSet.add('compress'); break;
       case '-c': case '--copy':
-        opts.copy = true; break;
+        opts.copy = true; cliSet.add('copy'); break;
       case '--include':
-        opts.include.push(args[++i]); break;
+        opts.include.push(args[++i]); cliSet.add('include'); break;
       case '--exclude':
-        opts.exclude.push(args[++i]); break;
+        opts.exclude.push(args[++i]); cliSet.add('exclude'); break;
       case '--no-tokens':
-        opts.noTokens = true; break;
+        opts.noTokens = true; cliSet.add('noTokens'); break;
       case '--line-numbers':
-        opts.lineNumbers = true; break;
+        opts.lineNumbers = true; cliSet.add('lineNumbers'); break;
       case '--no-comments':
-        opts.noComments = true; break;
+        opts.noComments = true; cliSet.add('noComments'); break;
       case '--max-size':
-        opts.maxSize = parseInt(args[++i], 10); break;
+        opts.maxSize = parseInt(args[++i], 10); cliSet.add('maxSize'); break;
       case '--no-security-check':
-        opts.noSecurityCheck = true; break;
+        opts.noSecurityCheck = true; cliSet.add('noSecurityCheck'); break;
       case '--config':
-        opts.config = args[++i]; break;
+        opts.config = args[++i]; cliSet.add('config'); break;
       case '--verbose':
-        opts.verbose = true; break;
+        opts.verbose = true; cliSet.add('verbose'); break;
       default:
         if (!arg.startsWith('-') && !opts.output) {
           opts.output = arg;
+          cliSet.add('output');
         }
         break;
     }
     i++;
   }
 
+  opts._cliSet = cliSet;
   return opts;
 }
 
@@ -104,14 +109,17 @@ function loadConfig(rootDir, configPath) {
 
 function mergeOpts(cliOpts, config) {
   const merged = { ...cliOpts };
+  const cliSet = cliOpts._cliSet || new Set();
   for (const [k, v] of Object.entries(config)) {
     const key = k.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-    if (key in merged) {
+    if (key in merged && key !== '_cliSet') {
+      // CLI explicitly set values always win
+      if (cliSet.has(key)) continue;
       if (Array.isArray(merged[key]) && !Array.isArray(v)) {
         merged[key].push(v);
       } else if (Array.isArray(merged[key]) && Array.isArray(v)) {
         merged[key] = [...v, ...merged[key]];
-      } else if (merged[key] === false || merged[key] === null) {
+      } else {
         merged[key] = v;
       }
     }
@@ -257,7 +265,7 @@ function createIgnoreFilter(rootDir) {
 
 // ─── Secret Scanner ───────────────────────────────────────────────────────────
 const SECRET_PATTERNS = [
-  { name: 'AWS Access Key', pattern: /(?:^|[^A-Za-z0-9])(?:AKIA[0-9A-Z]{16})(?:$|[^A-Za-z0-9])/m },
+  { name: 'AWS Access Key', pattern: /(?:^|[^A-Za-z0-9])(?:AKIA[0-9A-Z]{12,20})(?:$|[^A-Za-z0-9])/m },
   { name: 'AWS Secret Key', pattern: /(?:aws_secret_access_key|aws_secret)\s*[:=]\s*[A-Za-z0-9/+=]{40}/mi },
   { name: 'GitHub Token', pattern: /(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,255}/m },
   { name: 'GitLab Token', pattern: /glpat-[A-Za-z0-9\-_]{20,}/m },
