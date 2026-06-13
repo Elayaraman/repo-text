@@ -219,7 +219,7 @@ flatten      # alternative
 
 ## Contributing
 
-Issues and PRs welcome at [github.com/elayaraman007/repo-text](https://github.com/elayaraman007/repo-text).
+Issues and PRs welcome at [github.com/Elayaraman/repo-text](https://github.com/Elayaraman/repo-text).
 
 ## License
 

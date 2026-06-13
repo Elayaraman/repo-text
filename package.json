@@ -33,11 +33,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elayaraman007/repo-text.git"
+    "url": "git+https://github.com/Elayaraman/repo-text.git"
   },
-  "homepage": "https://github.com/elayaraman007/repo-text#readme",
+  "homepage": "https://github.com/Elayaraman/repo-text#readme",
   "bugs": {
-    "url": "https://github.com/elayaraman007/repo-text/issues"
+    "url": "https://github.com/Elayaraman/repo-text/issues"
   },
   "author": "Elayaraman <elayaraman007@gmail.com>",
   "license": "MIT",
