@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+FLATTENED_PROJECT.txt
+repo-text-output.*
+.env
+.env.*

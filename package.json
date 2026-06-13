@@ -1,0 +1,52 @@
+{
+  "name": "repo-text",
+  "version": "2.0.0",
+  "description": "The lightest LLM context packer. Pack your entire repo into a single AI-ready file. 100x smaller than repomix, zero bloat.",
+  "main": "bin/flatter.js",
+  "bin": {
+    "repo-text": "./bin/flatter.js",
+    "flatter": "./bin/flatter.js",
+    "flatten": "./bin/flatter.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": [
+    "llm",
+    "context",
+    "ai",
+    "flatten",
+    "repository",
+    "codebase",
+    "repomix",
+    "repopack",
+    "chatgpt",
+    "claude",
+    "gemini",
+    "token",
+    "pack",
+    "cli",
+    "code-context",
+    "ai-context",
+    "xml",
+    "markdown"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elayaraman007/repo-text.git"
+  },
+  "homepage": "https://github.com/elayaraman007/repo-text#readme",
+  "bugs": {
+    "url": "https://github.com/elayaraman007/repo-text/issues"
+  },
+  "author": "Elayaraman <elayaraman007@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "ignore": "^7.0.5"
+  }
+}
